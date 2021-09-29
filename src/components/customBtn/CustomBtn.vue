@@ -9,7 +9,7 @@
 
 button {
     min-width: 100px;
-    background-color: hsl(210, 100%, 20%);
+    background-color: #003366;
     color: white;
     padding: 0.5rem 1rem;
     border: none;

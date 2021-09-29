@@ -2,9 +2,9 @@
 
     <main v-if="!isNameValid" class="main1">
         
-        <form @submit="potangina" >
+        <form @submit="joinChat" >
             <label for="name"> Enter Username </label>
-            <input v-model="name" type="text" name="name">
+            <input autocomplete="off" class="inputName" v-model="name" type="text" name="name">
             <custom-btn class="enterBtn"> Join </custom-btn>
         </form>
 
@@ -28,6 +28,11 @@ const socket = io('http://localhost:3000')
 
 export default defineComponent({
     components: { Chat },
+    provide() {
+        return {
+            name: this.name
+        }
+    },
     data() {
         return {
             name: "",
@@ -36,7 +41,7 @@ export default defineComponent({
         }
     },
     methods: {
-        potangina(e: Event) {
+        joinChat(e: Event) {
             e.preventDefault()
 
             if (!this.name) {
@@ -74,6 +79,7 @@ main.main1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #152642;
 }
 
 form {
@@ -93,18 +99,24 @@ label {
     margin: 0 1rem;
     margin-bottom: 5px;
     font-size: 1.3rem;
+    color: white;
 }
 
-input {
+input.inputName {
     outline: none;
     border: none;
-    border-bottom: solid black 2px;
-    background-color: transparent;
+    border-bottom: solid white 2px;
+    background: transparent;
     outline: none;
     margin: 0 1rem;
     padding: 0.5rem 0;
     font-family: var(--main-font);
     font-weight: 400;
+    color: white;
+}
+
+input.inputName:valid {
+    background-color: transparent;
 }
 
 .enterBtn {
@@ -118,6 +130,7 @@ main.main2 {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background-color: #081B33;
 }
 
 </style>
