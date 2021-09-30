@@ -4,6 +4,7 @@
         
         <form @submit="joinChat" >
             <label for="name"> Enter Username </label>
+            <p> {{mySocketID}} </p>
             <input autocomplete="off" class="inputName" v-model="name" type="text" name="name">
             <custom-btn class="enterBtn"> Join </custom-btn>
         </form>
@@ -11,7 +12,7 @@
     </main>
 
     <main v-else class="main2">
-        <chat :name="name" :usersJoined="usersJoined" />
+        <chat :mySocketID="mySocketID" :name="name" :usersJoined="usersJoined" />
     </main>
 
 </template>
@@ -19,12 +20,10 @@
 <script lang="ts">
 
 import { defineComponent } from 'vue'
-import { io } from "socket.io-client"
+import { socket } from '../socket/index'
 
 // Components
 import Chat from '../components/chat/Chat.vue'
-
-const socket = io('http://localhost:3000')
 
 export default defineComponent({
     components: { Chat },
@@ -37,7 +36,8 @@ export default defineComponent({
         return {
             name: "",
             isNameValid: false,
-            usersJoined: [] as string[]
+            usersJoined: [] as string[],
+            mySocketID: undefined as undefined | string
         }
     },
     methods: {
@@ -47,7 +47,8 @@ export default defineComponent({
             if (!this.name) {
                 return this.$toast.open({
                     message: 'Please enter a name.',
-                    type: 'warning'
+                    type: 'warning',
+                    position: 'top-right'
                 })
             }
 
@@ -55,12 +56,18 @@ export default defineComponent({
                 socketID: socket.id,
                 name: this.name
             })
+            this.mySocketID = socket.id
             this.isNameValid = true
 
         },
         allUsers() {
             socket.on('user-join', data => {
                 this.usersJoined.push(data)
+                this.$toast.open({
+                    message: data,
+                    type: 'info',
+                    position: 'top-right'
+                })
             })
         }
     },

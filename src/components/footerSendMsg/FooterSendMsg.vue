@@ -6,7 +6,7 @@
                 <textarea v-model="msg" placeholder="Enter message" name="msg" cols="10" rows="1"></textarea>
             </div>
             <div class="sendMsgBtn">
-                <custom-btn @click="sendMsg" > Send </custom-btn>
+                <custom-btn class="sendBtn" @click="sendMsg" > Send </custom-btn>
             </div>
         </div>
     </main>
@@ -30,6 +30,15 @@ export default defineComponent({
     },
     methods: {
         sendMsg() {
+
+            if (!this.msg) {
+                return this.$toast.open({
+                    message: 'Please enter something',
+                    type: 'warning',
+                    position: 'top-right'
+                })
+            }
+
             socket.emit('send-msg', {
                 name: this.name,
                 socketID: socket.id,
@@ -37,12 +46,6 @@ export default defineComponent({
                 time: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`
             })
             this.msg = ""
-            this.scrollToBottom()
-        },
-        scrollToBottom() {
-            setTimeout(() => {
-                this.autoscroll!()
-            }, 1)
         }
     }
 })
@@ -99,6 +102,23 @@ textarea::placeholder {
     /* background-color: blue; */
     display: flex;
     justify-content: center;
+}
+
+@media screen and (max-width: 550px) {
+
+    main.main3 {
+        width: 100vw;
+    }
+
+    .sendBox {
+        flex-direction: column;
+    }
+
+    .sendBtn {
+        width: 100%;
+        margin-top: 0.3rem;
+    }
+
 }
 
 </style>

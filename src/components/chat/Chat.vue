@@ -1,11 +1,8 @@
 <template>
     <main class="chat">
         <div id="chatbox" class="chatbox">
-            <div class="user" v-for="user in usersJoined" :key="user" >
-                <p> {{user}} </p>
-            </div>
             <div class="msg" v-for="msg in msgs" :key="msg">
-                <div v-if="msg.name === name" :class="msg.name === name ? 'me' : 'other'">
+                <div v-if="msg.socketID === mySocketID" :class="msg.socketID === mySocketID ? 'me' : 'other'">
                     <h4> {{msg.name}} </h4>
                     <p> {{msg.msg}} </p>
                     <p class="time"> {{msg.time}} </p>
@@ -33,7 +30,8 @@ export default defineComponent({
     // components: { FooterSendMsg },
     props: {
         usersJoined: Array,
-        name: String
+        name: String,
+        mySocketID: String
     },
     data() {
         return {
@@ -59,13 +57,14 @@ export default defineComponent({
         },
         scrollMsgs() {
             const chatBox = this.$el.querySelector('#chatbox')
-            console.log(chatBox.scrollTop)
-            console.log(chatBox.scrollHeight)
             chatBox.scrollTop = chatBox.scrollHeight
         }
     },
     mounted() {
         this.getMsgs()
+    },
+    updated() {
+        this.scrollMsgs()
     },
     watch: {
         isDisabled() {
@@ -83,15 +82,12 @@ export default defineComponent({
 main.chat {
     display: flex;
     flex-direction: column;
-    /* background-color: teal; */
-    /* padding: 4rem 0; */
-    /* border: black 1px solid;
-    border-radius: 20px; */
     padding: 1rem;
+    align-items: center;
     position: relative;
     height: 100vh;
-    /* padding-bottom: 5rem; */
-    background-color: #081B33;
+    /* background-color: yellow; */
+    /* background-color: #081B33; */
 }
 
 h4 {
@@ -109,22 +105,24 @@ p {
     display: flex;
     width: 500px;
     flex-direction: column;
+    justify-content: flex-start;
     overflow-y: auto;
     padding: 0 0.5rem;
+    /* background-color: red; */
 }
 
-.chatbox::-webkit-scrollbar{
+.chatbox::-webkit-scrollbar {
     width: 5px;
     height: 5px;
 }
-.chatbox::-webkit-scrollbar-thumb{
+.chatbox::-webkit-scrollbar-thumb {
     background: #003366;
     border-radius: 0px;
 }
-.chatbox::-webkit-scrollbar-thumb:hover{
+.chatbox::-webkit-scrollbar-thumb:hover {
     background: #B3AFB3;
 }
-.chatbox::-webkit-scrollbar-track{
+.chatbox::-webkit-scrollbar-track {
     background: #F0F0F0;
     border-radius: 0px;
     box-shadow: inset 0px 0px 0px 0px #F0F0F0;
@@ -144,14 +142,14 @@ p {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    background-color: #152642;
+    background-color: #2F4562;
     padding: 1rem;
     border-radius: 5px;
     text-align: right;
 }
 
 .other {
-    background-color: #2F4562;
+    background-color: #152642;
     padding: 1rem;
     border-radius: 5px;
     text-align: left;
@@ -166,9 +164,17 @@ p {
 }
 
 .time {
-    margin-top: 0.2rem;
+    margin-top: 0.3rem;
     font-size: 0.7rem;
     color: gray;
+}
+
+@media screen and (max-width: 550px) {
+
+    .chatbox {
+        width: 90vw;
+    } 
+
 }
 
 </style>
